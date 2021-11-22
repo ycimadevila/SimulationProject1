@@ -40,12 +40,12 @@ def arrive_event(i, ta, ts1, ts2, ts3, \
         #sushi
         ts = current_time + dt.uniform(5, 8, random.random())
 
-    # print(f'-------------------> entre con {i},{ts - current_time},  {current_time}, {ta}, {ts1}, {ts2}, {ts3}, {workers}, {cook_count}')
+    # print(f'-------------------> entre con {i}')#,{ts - current_time},  {current_time}, {ta}, {ts1}, {ts2}, {ts3}, {workers}, {cook_count}')
     
     if in_rush_hour(current_time) and cook_count < 3 and testing_with_worker:
         
         if clients:
-            print(f'entre con {clients[0]}')
+            # print(f'entre con {clients[0]}')
             if workers[0] == 0:
                 clients.append(i)
                 item = clients.pop(0)
@@ -71,7 +71,7 @@ def arrive_event(i, ta, ts1, ts2, ts3, \
                     #sushi
                     ts = current_time + dt.uniform(5, 8, random.random())
                 on_kitchen[workers[1]] = current_time
-                ts1 = ts
+                ts2 = ts
             elif workers[2] == 0:
                 clients.append(i)
                 item = clients.pop(0)
@@ -84,11 +84,11 @@ def arrive_event(i, ta, ts1, ts2, ts3, \
                     #sushi
                     ts = current_time + dt.uniform(5, 8, random.random())
                 on_kitchen[workers[2]] = current_time
-                ts1 = ts
+                ts3 = ts
             cook_count += 1
 
         else:
-            print(f'entre a 3 con {i}')
+            # print(f'entre a 3 con {i}')
             if workers[0] == 0:
                 workers[0] = i
                 ts1 = ts
@@ -110,7 +110,7 @@ def arrive_event(i, ta, ts1, ts2, ts3, \
             workers[1] = i
             ts2 = ts
         cook_count += 1
-        on_kitchen[i] = current_time
+        on_kitchen[i] = ts
         # print(f'entro {i}')
     
     elif cook_count < 2 and not testing_with_worker:
@@ -131,91 +131,85 @@ def arrive_event(i, ta, ts1, ts2, ts3, \
     # print(workers)
 
     return True, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen
-    # return False, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen
 
 def ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients: list, leaves,  on_kitchen):
-    if min([ts1, ts2, ts3]) == ts1 and ts1 != math.inf :
-        print(f'_______________________evento 1 sali con {workers[0]} {workers}{current_time} {ts1} {ts2} {ts3}')
-        Cp += 1
-        current_time = ts1
-        leaves[workers[0]] = current_time
-        
-        if clients:
-            workers[0] = clients[0]
-            clients.pop(0)
-            food = arrives[workers[0]][1]
-            if food: 
-                # sandwish
-                ts1 = current_time + dt.uniform(3, 5, random.random())
-            else: 
-                #sushi
-                ts1 = current_time + dt.uniform(5, 8, random.random())
-            on_kitchen[workers[0]] = current_time
-        else:  
-            workers[0] = 0
-            ts1 = math.inf
-            cook_count -= 1
+    # print(f'_______________________evento 1 sali con {workers[0]} {workers}{current_time} {ts1} {ts2} {ts3}')
+    Cp += 1
+    current_time = ts1
+    leaves[workers[0]] = current_time
+    
+    if clients:
+        workers[0] = clients[0]
+        clients.pop(0)
+        food = arrives[workers[0]][1]
+        if food: 
+            # sandwish
+            ts1 = current_time + dt.uniform(3, 5, random.random())
+        else: 
+            #sushi
+            ts1 = current_time + dt.uniform(5, 8, random.random())
+        on_kitchen[workers[0]] = current_time
+    else:  
+        workers[0] = 0
+        ts1 = math.inf
+        cook_count -= 1
 
-        return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
-    return False, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
+    return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
 
 def ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients: list, leaves, on_kitchen):
     
-    if min([ts1, ts2, ts3]) == ts2 and ts2 != math.inf :
-        print(f'_______________________evento 2 sali con {workers[1]} {workers}  {current_time} {ts1} {ts2} {ts3}')
-        Cp += 1
-        current_time = ts2
-        leaves[workers[1]] = current_time 
+    # print(f'_______________________evento 2 sali con {workers[1]} {workers}  {current_time} {ts1} {ts2} {ts3}')
+    Cp += 1
+    current_time = ts2
+    leaves[workers[1]] = current_time 
+    
+    if clients:
+        workers[1] = clients[0]
+        clients.pop(0)
+        food = arrives[workers[1]][1]
+        if food: 
+            # sandwish
+            ts2 = current_time + dt.uniform(3, 5, random.random())
+        else: 
+            #sushi
+            ts2 = current_time + dt.uniform(5, 8, random.random())
         
-        if clients:
-            workers[1] = clients[0]
-            clients.pop(0)
-            food = arrives[workers[1]][1]
-            if food: 
-                # sandwish
-                ts2 = current_time + dt.uniform(3, 5, random.random())
-            else: 
-                #sushi
-                ts2 = current_time + dt.uniform(5, 8, random.random())
-            
-            on_kitchen[workers[1]] = current_time
-        else:  
-            workers[1] = 0
-            ts2 = math.inf
-            cook_count -= 1
+        on_kitchen[workers[1]] = current_time
+    else:  
+        workers[1] = 0
+        ts2 = math.inf
+        cook_count -= 1
 
-        return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
+    return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
     return False, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
 
 def ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients: list, leaves, in_rush_hour, on_kitchen):
     
-    if min([ts1, ts2, ts3]) == ts3 and ts3 != math.inf:
-        print(f'_______________________evento 3 sali con {workers[2]} {workers}  {current_time} {ts1} {ts2} {ts3}')
-        Cp += 1
-        current_time = ts3
-        leaves[workers[2]] = current_time
+    # print(f'_______________________evento 3 sali con {workers[2]} {workers}  {current_time} {ts1} {ts2} {ts3}')
+    Cp += 1
+    current_time = ts3
+    leaves[workers[2]] = current_time
+    
+    if clients:
+        if in_rush_hour:
+            workers[2] = clients[0]
+            clients.pop(0)
+            food = arrives[workers[2]][1]
+            if food: 
+                # sandwish
+                ts3 = current_time + dt.uniform(3, 5, random.random())
+            else: 
+                #sushi
+                ts3 = current_time + dt.uniform(5, 8, random.random())
         
-        if clients:
-            if in_rush_hour:
-                workers[2] = clients[0]
-                clients.pop(0)
-                food = arrives[workers[2]][1]
-                if food: 
-                    # sandwish
-                    ts3 = current_time + dt.uniform(3, 5, random.random())
-                else: 
-                    #sushi
-                    ts3 = current_time + dt.uniform(5, 8, random.random())
-            
-                on_kitchen[workers[2]] = current_time
-                return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
-         
-        workers[2] = 0
-        ts3 = math.inf
-        cook_count -= 1
+            on_kitchen[workers[2]] = current_time
+            return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
+        
+    workers[2] = 0
+    ts3 = math.inf
+    cook_count -= 1
 
-        return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
-    return False, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
+    return True, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves 
 
 
 if __name__ == "__main__":
@@ -259,103 +253,50 @@ if __name__ == "__main__":
         _ta.append(current)
 
 
-    # _ta = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-    ##############################################
-    print(_ta)
+    ########################
     while i != len(_ta):
         m = min(_ta[i], ts1, ts2, ts3)
 
         if m == _ta[i]:
-            print(f'entre a arrive, {(_ta[i], ts1, ts2, ts3)}')
             status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
-                arrive_event(i, ta, ts1, ts2, ts3, \
+                arrive_event(i, _ta[i], ts1, ts2, ts3, \
                         total_min, cook_count, current_time, \
                             clients, workers, Ca, on_kitchen, testing_with_worker)
             i += 1
         elif m == ts1:
-            print(f'entre a ts1 {(_ta[i], ts1, ts2, ts3)}')
             s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
                     leaves, on_kitchen)
         
         elif m == ts2:
-            print(f'entre a ts2 {(_ta[i], ts1, ts2, ts3)}')
             s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
                     leaves, on_kitchen)
         
         else:
-            print(f'entre a ts3 {(_ta[i], ts1, ts2, ts3)}')
             s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
                     in_rush_hour(current_time), on_kitchen)
 
-    while ts1 != math.inf and ts2 != math.inf and ts3 != math.inf:
+    while clients or workers != [0, 0, 0]:
         m = min(ts1, ts2, ts3)
 
         if m == ts1:
             s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, aplus, on_kitchen)
+                    leaves, on_kitchen)
         
         elif m == ts2:
             s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, aplus, on_kitchen)
+                    leaves, on_kitchen)
         
         else:
             s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
                 ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
-                    aplus, in_rush_hour(current_time), on_kitchen)
+                    in_rush_hour(current_time), on_kitchen)
         
-
-    '''
-        while True:
-            if i == len(_ta):
-                break
-            
-            ta = _ta[i]
-            
-            status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
-                arrive_event(i, ta, ts1, ts2, ts3, \
-                        total_min, cook_count, current_time, \
-                            clients, workers, Ca, on_kitchen, testing_with_worker)
-
-            if i + 1 != len(_ta):
-                aplus = _ta[i + 1]
-            else:
-                aplus = math.inf
-
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            if current_time > aplus:
-                i += 1
-                continue
-
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            if current_time > aplus:
-                i += 1
-                continue
-
-            
-            if status or (not s1 and not s2):
-                i += 1
-
-
-        while clients or not workers == [0,0,0]:
-            aplus = math.inf
-            
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            
-            if not s1 and not s2: break
-
-    '''
-    print(len(_ta) - 1)
-    print(on_kitchen)
+    
     for a in range(len(_ta) - 1):
         on_kitchen[a + 1]
         arrives[a + 1][0]
@@ -381,61 +322,56 @@ if __name__ == "__main__":
     ta = current_time
     lambda_ = random.randint(2, 5)
     testing_with_worker = 1
-    
-    
-    
-    
-    
-    '''
-        while True:
-            if i == len(_ta):
-                break
-            ta = _ta[i]
+  
+    while i != len(_ta):
+        m = min(_ta[i], ts1, ts2, ts3)
 
-            
+        if m == _ta[i]:
+            # print(f'entre a arrive, {(_ta[i], ts1, ts2, ts3)} {workers}')
             status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
-                arrive_event(i, ta, ts1, ts2, ts3, \
+                arrive_event(i, _ta[i], ts1, ts2, ts3, \
                         total_min, cook_count, current_time, \
                             clients, workers, Ca, on_kitchen, testing_with_worker)
-
-            if i + 1 != len(_ta):
-                aplus = _ta[i + 1]
-            else:
-                aplus = math.inf
-
+            i += 1
+        elif m == ts1:
+            # print(f'entre a ts1 {(_ta[i], ts1, ts2, ts3)} {workers}')
             s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            if current_time > aplus:
-                i += 1
-                continue
+                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                    leaves, on_kitchen)
+        
+        elif m == ts2:
+            # print(f'entre a ts2 {(_ta[i], ts1, ts2, ts3)} {workers}')
             s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
-            if current_time > aplus:
-                i += 1
-                continue
+                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                    leaves, on_kitchen)
+        
+        else:
+            # print(f'entre a ts3 {(_ta[i], ts1, ts2, ts3)} {workers}')
             s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, in_rush_hour(current_time), on_kitchen)
-            
-            if current_time > aplus:
-                i += 1
-                continue
+                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                    in_rush_hour(current_time), on_kitchen)
 
-            if status or (not s1 and not s2 and not s3):
-                i += 1
-            
+    while clients or workers != [0, 0, 0]: #ts1 != math.inf and ts2 != math.inf and ts3 != math.inf:
+        m = min(ts1, ts2, ts3)
 
-        while clients or not workers == [0, 0, 0]:
-            aplus = math.inf
-            
+        if m == ts1:
+            # print(f'entre a ts1 {(ts1, ts2, ts3)} {workers}')
             s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
+                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                    leaves, on_kitchen)
+        
+        elif m == ts2:
+            # print(f'entre a ts2 {(ts1, ts2, ts3)} {workers}')
             s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, on_kitchen)
+                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                    leaves, on_kitchen)
+        
+        else:
+            # print(f'entre a ts3 {(ts1, ts2, ts3)} {workers}')
             s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, aplus, in_rush_hour(current_time), on_kitchen)
-            
-            if not s1 and not s2 and not s3: break
-    '''
+                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                    in_rush_hour(current_time), on_kitchen)
+ 
     for a in range(len(_ta) - 1):
         try:
             on_kitchen[a + 1]
@@ -449,10 +385,10 @@ if __name__ == "__main__":
         if on_kitchen[a + 1] - arrives[a + 1][0] >= 5:
             withcooker += 1
     
-    print('withcooker', withcooker)
-    print('withoutcooker', withoutcooker)
+    print('number of customers who waited more than 5 minutes with one more cook during rush hour:', withcooker * 100 / (len(_ta)- 1), '%')
+    print('number of customers who waited more than 5 minutes without one more cook during rush hour:', withoutcooker * 100 / (len(_ta)- 1), '%')
     # print(_ta)
-    print(len(arrives))
+    print('total number of customers:', len(arrives))
     # for a in enumerate(_ta):
     #     print(a, __ta[a[0]])
         
@@ -461,6 +397,6 @@ if __name__ == "__main__":
     for i in __ta:
         if i: rh +=1
         else: nrh +=1
-
     
-    print('rh, nrh', rh, nrh)
+    print('number of customers in rush hour:', rh)
+    print('number of customers in normal time:', nrh)

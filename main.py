@@ -213,190 +213,193 @@ def ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clie
 
 
 if __name__ == "__main__":
-    withcooker = 0
-    withoutcooker = 0
-    
-    ### initializing the kitchen without an extra cooker
-    arrives = {}
-    leaves = {}
-    on_kitchen = {}
-    current_time = 0
-    ts1 = math.inf
-    ts2 = math.inf
-    ts3 = math.inf
-    Ca = 0
-    Cp = 0
-    i = 1
-
-    workers = [0, 0, 0]
-    cook_count = 0
-    clients = []
-
-    ta = current_time
-    testing_with_worker = 0
-
-    ##############################################
-    current = 0
-    _ta = [0]
-    __ta = [-1]
-    while True:
-        if not in_rush_hour(current):
-            current += dt.exponential(1, random.random())
-            __ta.append(0)
-        else:
-            current += dt.exponential(4, random.random())
-            __ta.append(1)
-
-        if current > total_min:
-            break
-
-        _ta.append(current)
-
-
-    ########################
-    while i != len(_ta):
-        m = min(_ta[i], ts1, ts2, ts3)
-
-        if m == _ta[i]:
-            status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
-                arrive_event(i, _ta[i], ts1, ts2, ts3, \
-                        total_min, cook_count, current_time, \
-                            clients, workers, Ca, on_kitchen, testing_with_worker)
-            i += 1
-        elif m == ts1:
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
+    means = []
+    verbose = 0
+    for _ in range(1000):
+        withcooker = 0
+        withoutcooker = 0
         
-        elif m == ts2:
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        else:
-            s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
-                    in_rush_hour(current_time), on_kitchen)
+        ### initializing the kitchen without an extra cooker
+        arrives = {}
+        leaves = {}
+        on_kitchen = {}
+        current_time = 0
+        ts1 = math.inf
+        ts2 = math.inf
+        ts3 = math.inf
+        Ca = 0
+        Cp = 0
+        i = 1
 
-    while clients or workers != [0, 0, 0]:
-        m = min(ts1, ts2, ts3)
+        workers = [0, 0, 0]
+        cook_count = 0
+        clients = []
 
-        if m == ts1:
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        elif m == ts2:
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        else:
-            s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
-                    in_rush_hour(current_time), on_kitchen)
-        
-    
-    for a in range(len(_ta) - 1):
-        on_kitchen[a + 1]
-        arrives[a + 1][0]
-        if on_kitchen[a + 1] - arrives[a + 1][0] >= 5:
-            withoutcooker += 1
-    
-    ### initializing the kitchen with an extra cooker
-    arrives = {}
-    leaves = {}
-    on_kitchen = {}
-    current_time = 0
-    ts1 = math.inf
-    ts2 = math.inf
-    ts3 = math.inf
-    Ca = 0
-    Cp = 0
-    i = 1
+        ta = current_time
+        testing_with_worker = 0
 
-    workers = [0, 0, 0]
-    cook_count = 0
-    clients = []
+        ##############################################
+        current = 0
+        _ta = [0]
+        __ta = [-1]
+        while True:
+            if not in_rush_hour(current):
+                current += dt.exponential(1, random.random())
+                __ta.append(0)
+            else:
+                current += dt.exponential(4, random.random())
+                __ta.append(1)
 
-    ta = current_time
-    lambda_ = random.randint(2, 5)
-    testing_with_worker = 1
-  
-    while i != len(_ta):
-        m = min(_ta[i], ts1, ts2, ts3)
+            if current > total_min:
+                break
 
-        if m == _ta[i]:
-            # print(f'entre a arrive, {(_ta[i], ts1, ts2, ts3)} {workers}')
-            status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
-                arrive_event(i, _ta[i], ts1, ts2, ts3, \
-                        total_min, cook_count, current_time, \
-                            clients, workers, Ca, on_kitchen, testing_with_worker)
-            i += 1
-        elif m == ts1:
-            # print(f'entre a ts1 {(_ta[i], ts1, ts2, ts3)} {workers}')
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        elif m == ts2:
-            # print(f'entre a ts2 {(_ta[i], ts1, ts2, ts3)} {workers}')
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        else:
-            # print(f'entre a ts3 {(_ta[i], ts1, ts2, ts3)} {workers}')
-            s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
-                    in_rush_hour(current_time), on_kitchen)
+            _ta.append(current)
 
-    while clients or workers != [0, 0, 0]: #ts1 != math.inf and ts2 != math.inf and ts3 != math.inf:
-        m = min(ts1, ts2, ts3)
+        ########################
+        while i != len(_ta):
+            m = min(_ta[i], ts1, ts2, ts3)
 
-        if m == ts1:
-            # print(f'entre a ts1 {(ts1, ts2, ts3)} {workers}')
-            s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
+            if m == _ta[i]:
+                status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
+                    arrive_event(i, _ta[i], ts1, ts2, ts3, \
+                            total_min, cook_count, current_time, \
+                                clients, workers, Ca, on_kitchen, testing_with_worker)
+                i += 1
+            elif m == ts1:
+                s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            elif m == ts2:
+                s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            else:
+                s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                        in_rush_hour(current_time), on_kitchen)
+
+        while clients or workers != [0, 0, 0]:
+            m = min(ts1, ts2, ts3)
+
+            if m == ts1:
+                s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            elif m == ts2:
+                s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            else:
+                s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                        in_rush_hour(current_time), on_kitchen)
+            
         
-        elif m == ts2:
-            # print(f'entre a ts2 {(ts1, ts2, ts3)} {workers}')
-            s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
-                    leaves, on_kitchen)
-        
-        else:
-            # print(f'entre a ts3 {(ts1, ts2, ts3)} {workers}')
-            s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
-                ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
-                    in_rush_hour(current_time), on_kitchen)
- 
-    for a in range(len(_ta) - 1):
-        try:
+        for a in range(len(_ta) - 1):
             on_kitchen[a + 1]
-        except KeyError as e:
-            print(str(e), type(str(e)))
-            print('was it in rudh hour?', __ta[int(str(e))])
-            print(len(_ta))
-            print(on_kitchen.keys())
-            print(arrives.keys())
-            print(leaves.keys())
-        if on_kitchen[a + 1] - arrives[a + 1][0] >= 5:
-            withcooker += 1
-    
-    print('number of customers who waited more than 5 minutes with one more cook during rush hour:', withcooker * 100 / (len(_ta)- 1), '%')
-    print('number of customers who waited more than 5 minutes without one more cook during rush hour:', withoutcooker * 100 / (len(_ta)- 1), '%')
-    # print(_ta)
-    print('total number of customers:', len(arrives))
-    # for a in enumerate(_ta):
-    #     print(a, __ta[a[0]])
+            arrives[a + 1][0]
+            if on_kitchen[a + 1] - arrives[a + 1][0] >= 5:
+                withoutcooker += 1
         
-    rh = 0
-    nrh = 0
-    for i in __ta:
-        if i: rh +=1
-        else: nrh +=1
+        ### initializing the kitchen with an extra cooker
+        arrives = {}
+        leaves = {}
+        on_kitchen = {}
+        current_time = 0
+        ts1 = math.inf
+        ts2 = math.inf
+        ts3 = math.inf
+        Ca = 0
+        Cp = 0
+        i = 1
+
+        workers = [0, 0, 0]
+        cook_count = 0
+        clients = []
+
+        ta = current_time
+        lambda_ = random.randint(2, 5)
+        testing_with_worker = 1
     
-    print('number of customers in rush hour:', rh)
-    print('number of customers in normal time:', nrh)
+        while i != len(_ta):
+            m = min(_ta[i], ts1, ts2, ts3)
+
+            if m == _ta[i]:
+                # print(f'entre a arrive, {(_ta[i], ts1, ts2, ts3)} {workers}')
+                status, Ca, ts1, ts2, ts3, cook_count, current_time, clients, workers, on_kitchen = \
+                    arrive_event(i, _ta[i], ts1, ts2, ts3, \
+                            total_min, cook_count, current_time, \
+                                clients, workers, Ca, on_kitchen, testing_with_worker)
+                i += 1
+            elif m == ts1:
+                # print(f'entre a ts1 {(_ta[i], ts1, ts2, ts3)} {workers}')
+                s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            elif m == ts2:
+                # print(f'entre a ts2 {(_ta[i], ts1, ts2, ts3)} {workers}')
+                s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            else:
+                # print(f'entre a ts3 {(_ta[i], ts1, ts2, ts3)} {workers}')
+                s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                        in_rush_hour(current_time), on_kitchen)
+
+        while clients or workers != [0, 0, 0]: #ts1 != math.inf and ts2 != math.inf and ts3 != math.inf:
+            m = min(ts1, ts2, ts3)
+
+            if m == ts1:
+                # print(f'entre a ts1 {(ts1, ts2, ts3)} {workers}')
+                s1, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts1_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            elif m == ts2:
+                # print(f'entre a ts2 {(ts1, ts2, ts3)} {workers}')
+                s2, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts2_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, \
+                        leaves, on_kitchen)
+            
+            else:
+                # print(f'entre a ts3 {(ts1, ts2, ts3)} {workers}')
+                s3, ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves = \
+                    ts3_leaving_event(ts1, ts2, ts3, Cp, current_time, cook_count, workers, clients, leaves, \
+                        in_rush_hour(current_time), on_kitchen)
+    
+        for a in range(len(_ta) - 1):
+            try:
+                on_kitchen[a + 1]
+            except KeyError as e:
+                print(str(e), type(str(e)))
+                print('was it in rudh hour?', __ta[int(str(e))])
+                print(len(_ta))
+                print(on_kitchen.keys())
+                print(arrives.keys())
+                print(leaves.keys())
+            if on_kitchen[a + 1] - arrives[a + 1][0] >= 5:
+                withcooker += 1
+        
+        if verbose:
+            print('number of customers who waited more than 5 minutes with one more cook during rush hour:', withcooker * 100 / (len(_ta)- 1), '%')
+            print('number of customers who waited more than 5 minutes without one more cook during rush hour:', withoutcooker * 100 / (len(_ta)- 1), '%')
+            print('total number of customers:', len(arrives))
+                
+            rh = 0
+            nrh = 0
+            for i in __ta:
+                if i: rh +=1
+                else: nrh +=1
+            
+            print('number of customers in rush hour:', rh)
+            print('number of customers in normal time:', nrh)
+        if len(arrives) != 0:
+            means.append((withoutcooker - withcooker) * 100 / len(arrives))
+    print('After finding the mean of all the percentages obtained from the simulations, the conclusion is that the mean is:', sum(means) / len(means))

@@ -4,4 +4,4 @@
 
 Para la ejecución del código:
 
-> python main.py
+> python3 main.py

@@ -1,3 +1,3 @@
-# SimulationProject1
+# Simulation Project
 
 ### Yasmin Cisneros Cimadevila C411
